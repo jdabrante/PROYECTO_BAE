@@ -14,7 +14,7 @@ CREATE TABLE direccion (
     id INT AUTO_INCREMENT PRIMARY KEY,
     calle VARCHAR(50),
     numero INT,
-    otro VARCHAR(200),
+    otro VARCHAR(200) DEFAULT NULL,
     codigo_postal_municipio VARCHAR(5),
     FOREIGN KEY (codigo_postal_municipio) REFERENCES municipio(codigo_postal)
 );
@@ -98,9 +98,9 @@ CREATE TABLE cita (
 
 CREATE TABLE historial (
     id INT PRIMARY KEY,
-    resolucion VARCHAR(20),
-    anotacion VARCHAR(200),
-    descripcion VARCHAR(500),
+    resolucion VARCHAR(20) DEFAULT NULL,
+    anotacion VARCHAR(200) DEFAULT NULL,
+    descripcion VARCHAR(500) DEFAULT NULL,
     FOREIGN KEY (id) REFERENCES cita(id)
 ); 
 
