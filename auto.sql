@@ -16,8 +16,6 @@ BEGIN
 END
 $$
 
-
-
 -- Dirección
 
 -- # Tabla auxiliar de calles
@@ -54,9 +52,7 @@ END
 $$
 
 
-
 -- Usuario 
-
 
 
 -- Tablas axuiliares nombre y apellido
@@ -529,9 +525,7 @@ END
 $$
 
 
-
 -- Cita_Auxiliar
-
 
 
 DELIMITER $$
