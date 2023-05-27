@@ -48,6 +48,8 @@ La temática de este proyecto es médica, ya que es sobre una clinica para la at
 
   Está es la ventana de historial, donde se muestra un listado del seguimiento de las consultas realizadas de los pacientes de la clínica.
 
+## Solución 
+ 
 <details>
       <summary>Modelo Entidad Relación</summary>
       <div align="center">
