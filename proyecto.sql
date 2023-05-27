@@ -1,4 +1,5 @@
 -- Creación de la BD
+DROP DATABASE clinica_veterinaria;
 
 CREATE DATABASE clinica_veterinaria;
 USE clinica_veterinaria;
@@ -111,3 +112,7 @@ CREATE TABLE cita_auxiliar (
     FOREIGN KEY (id_cita) REFERENCES cita(id),
     FOREIGN KEY (id_auxiliar) REFERENCES auxiliar(dni)
 );
+
+SOURCE auto.sql
+
+SOURCE call.sql

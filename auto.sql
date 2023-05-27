@@ -20,7 +20,6 @@ $$
 
 -- # Randomizador
 
-DELIMITER $$
 DROP PROCEDURE IF EXISTS insertar_direccion $$
 CREATE PROCEDURE insertar_direccion(IN cantidad INT)
 BEGIN
@@ -49,13 +48,10 @@ BEGIN
 END
 $$
 
-
-
 -- Usuario 
 
 -- # Randomizador
 
-DELIMITER $$
 DROP PROCEDURE IF EXISTS insertar_usuario $$
 CREATE PROCEDURE insertar_usuario(IN cantidad INT)
 BEGIN
@@ -93,15 +89,10 @@ BEGIN
 END 
 $$
 
-
-
 -- Cliente
-
--- # Tabla auxiliar Categoria
 
 -- # Dar DNI no repetidos
 
-DELIMITER $$
 DROP FUNCTION IF EXISTS dni_no_rep_cl $$
 CREATE FUNCTION dni_no_rep_cl() RETURNS VARCHAR(9)
 DETERMINISTIC
@@ -119,10 +110,8 @@ BEGIN
 END
 $$
 
-
 -- # Randomizador 
 
-DELIMITER $$
 DROP PROCEDURE IF EXISTS insertar_cliente $$
 CREATE PROCEDURE insertar_cliente(IN cantidad INT)
 BEGIN
@@ -152,7 +141,6 @@ $$
 
 -- # Dar DNI no repetidos
 
-DELIMITER $$
 DROP FUNCTION IF EXISTS dni_no_rep_ador $$
 CREATE FUNCTION dni_no_rep_ador() RETURNS VARCHAR(9)
 DETERMINISTIC
@@ -170,10 +158,8 @@ BEGIN
 END
 $$
 
-
 -- # Randomizador 
 
-DELIMITER $$
 DROP PROCEDURE IF EXISTS insertar_administrador $$
 CREATE PROCEDURE insertar_administrador(IN cantidad INT)
 BEGIN
@@ -208,7 +194,6 @@ $$
 
 -- # Dar DNI no repetidos
 
-DELIMITER $$
 DROP FUNCTION IF EXISTS dni_no_rep_per $$
 CREATE FUNCTION dni_no_rep_per() RETURNS VARCHAR(9)
 DETERMINISTIC
@@ -228,7 +213,6 @@ $$
 
 -- # Randomizador
 
-DELIMITER $$
 DROP PROCEDURE IF EXISTS insertar_personal $$
 CREATE PROCEDURE insertar_personal(IN cantidad INT)
 BEGIN
@@ -263,7 +247,6 @@ $$
 
 -- # Dar DNI no repetidos
 
-DELIMITER $$
 DROP FUNCTION IF EXISTS dni_no_rep_advo $$
 CREATE FUNCTION dni_no_rep_advo() RETURNS VARCHAR(9)
 DETERMINISTIC
@@ -273,7 +256,11 @@ BEGIN
     SET contador = 0;
     SET _dni = (SELECT dni FROM personal LIMIT contador,1);
     SET contador = contador + 1;
-    WHILE contador <= (SELECT count(*) FROM personal) AND (SELECT _dni in (SELECT dni FROM administrativo)) DO
+    WHILE ((contador <= (SELECT count(*) FROM personal)) 
+    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM administrativo)) 
+    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM veterinario)) 
+    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM auxiliar)))
+    DO
         SET _dni = (SELECT dni FROM personal LIMIT contador,1);
         SET contador = contador + 1;
     END WHILE;
@@ -281,7 +268,6 @@ BEGIN
 END
 $$
 
-DELIMITER $$
 DROP PROCEDURE IF EXISTS insertar_administrativo $$
 CREATE PROCEDURE insertar_administrativo(IN cantidad INT)
 BEGIN
@@ -299,10 +285,11 @@ BEGIN
     INSERT INTO seccion VALUES('E');
     SET contador = 0;
     WHILE (contador <= cantidad) DO
-        SET _dni = (SELECT dni_no_rep_advo());
-        SET _seccion = (SELECT nombre FROM seccion ORDER BY RAND() LIMIT 1);
-        INSERT INTO administrativo VALUES(_dni,_seccion);
-        SET contador = contador + 1;
+        SET _dni = (SELECT _dni FROM personal ORDER BY RAND() LIMIT 1);
+        IF NOT EXISTS(SELECT * FROM administrativo WHERE dni = _dni) THEN
+            SET _seccion = (SELECT nombre FROM seccion ORDER BY RAND() LIMIT 1);
+            INSERT INTO administrativo VALUES(_dni,_seccion);
+            SET contador = contador + 1;
     END WHILE;
     DROP TABLE seccion;
 END
@@ -312,7 +299,6 @@ $$
 
 -- # Dar DNI no repetidos
 
-DELIMITER $$
 DROP FUNCTION IF EXISTS dni_no_rep_vet $$
 CREATE FUNCTION dni_no_rep_vet() RETURNS VARCHAR(9)
 DETERMINISTIC
@@ -322,7 +308,11 @@ BEGIN
     SET contador = 0;
     SET _dni = (SELECT dni FROM personal LIMIT contador,1);
     SET contador = contador + 1;
-    WHILE contador <= (SELECT count(*) FROM personal) AND (SELECT _dni in (SELECT dni FROM veterinario)) DO
+    WHILE contador <= (SELECT count(*) FROM personal)
+    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM administrativo)) 
+    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM veterinario)) 
+    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM auxiliar)) 
+    DO
         SET _dni = (SELECT dni FROM personal LIMIT contador,1);
         SET contador = contador + 1;
     END WHILE;
@@ -334,7 +324,6 @@ $$
 
 -- Randomizador
 
-DELIMITER $$
 DROP PROCEDURE IF EXISTS insertar_veterinario $$
 CREATE PROCEDURE insertar_veterinario(IN cantidad INT)
 BEGIN
@@ -352,7 +341,8 @@ BEGIN
     INSERT INTO especialidad VALUES('oftalmologia');
     SET letras = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
     SET contador = 0;
-    WHILE (contador <= cantidad) DO
+    WHILE (contador <= cantidad) 
+    DO
         SET _dni = (SELECT dni_no_rep_vet());
         SET _licencia = CONCAT((SELECT FLOOR(RAND()*(10000000))),(SELECT SUBSTR(letras,(SELECT FLOOR(RAND() * (10) + 1)),1)));
         SET _especialidad = (SELECT nombre FROM especialidad ORDER BY RAND() LIMIT 1);
@@ -367,7 +357,6 @@ $$
 
 -- # Dar DNI no repetidos
 
-DELIMITER $$
 DROP FUNCTION IF EXISTS dni_no_rep_aux $$
 CREATE FUNCTION dni_no_rep_aux() RETURNS VARCHAR(9)
 DETERMINISTIC
@@ -377,7 +366,11 @@ BEGIN
     SET contador = 0;
     SET _dni = (SELECT dni FROM personal LIMIT contador,1);
     SET contador = contador + 1;
-    WHILE contador <= (SELECT count(*) FROM personal) AND (SELECT _dni in (SELECT dni FROM auxiliar)) DO
+    WHILE contador <= (SELECT count(*) FROM personal)
+    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM administrativo)) 
+    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM veterinario)) 
+    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM auxiliar)) 
+    DO 
         SET _dni = (SELECT dni FROM personal LIMIT contador,1);
         SET contador = contador + 1;
     END WHILE;
@@ -387,7 +380,6 @@ $$
 
 -- Randomizador
 
-DELIMITER $$
 DROP PROCEDURE IF EXISTS insertar_auxiliar $$
 CREATE PROCEDURE insertar_auxiliar(IN cantidad INT)
 BEGIN
@@ -416,7 +408,6 @@ $$
 
 -- Randomizador
 
-DELIMITER $$
 DROP PROCEDURE IF EXISTS insertar_mascota $$
 CREATE PROCEDURE insertar_mascota(IN cantidad INT)
 BEGIN
@@ -458,7 +449,6 @@ $$
 
 -- Cita
 
-DELIMITER $$
 DROP PROCEDURE IF EXISTS crear_cita $$
 CREATE PROCEDURE crear_cita(IN cantidad INT)
 BEGIN
@@ -487,7 +477,6 @@ $$
 
 -- Cita_Auxiliar
 
-DELIMITER $$
 DROP TRIGGER IF EXISTS generar_cita_auxiliar $$
 CREATE TRIGGER generar_cita_auxiliar
 AFTER INSERT ON cita
@@ -515,7 +504,6 @@ $$
 
 -- Historial
 
-DELIMITER $$
 DROP TRIGGER IF EXISTS generar_historial $$
 CREATE TRIGGER generar_historial
 AFTER INSERT ON cita 
@@ -527,6 +515,44 @@ BEGIN
         INSERT INTO historial VALUES(NEW.id, 'atendida', 'lorem ipsum', 'lorem ipsum');
     END IF;
 END
+$$
+
+-- ALTER TABLE mascota DROP INDEX idx_especie
+-- $$
+CREATE INDEX idx_especie ON mascota(especie)
+$$
+-- ALTER TABLE cita DROP INDEX idx_urgencia
+-- $$
+CREATE INDEX idx_urgencia ON cita(urgencia)
+$$
+
+DROP VIEW IF EXISTS historial_mascota
+$$
+CREATE VIEW historial_mascota AS
+(SELECT c.*, h.resolucion, h.anotacion, h.descripcion 
+FROM cita AS c JOIN historial AS h ON c.id = h.id
+WHERE h.resolucion = 'atendida')
+$$
+
+DROP VIEW IF EXISTS veterinario_info
+$$
+CREATE VIEW veterinario_info AS
+(SELECT u.*, p.nuss, p.tipo_contrato, p.salario, v.licencia, v.especialidad 
+FROM usuario AS u JOIN personal AS p ON u.dni = p.dni JOIN veterinario AS v ON u.dni = v.dni)
+$$
+
+DROP VIEW IF EXISTS auxiliar_info
+$$
+CREATE VIEW auxiliar_info AS
+(SELECT u.*, p.nuss, p.tipo_contrato, p.salario, a.especialidad 
+FROM usuario AS u JOIN personal AS p ON u.dni = p.dni JOIN auxiliar AS a ON u.dni = a.dni)
+$$
+
+DROP VIEW IF EXISTS used_dni
+$$
+CREATE VIEW auxiliar_info AS
+(SELECT u.*, p.nuss, p.tipo_contrato, p.salario, a.especialidad 
+FROM usuario AS u JOIN personal AS p ON u.dni = p.dni JOIN auxiliar AS a ON u.dni = a.dni)
 $$
 
 DELIMITER ;
