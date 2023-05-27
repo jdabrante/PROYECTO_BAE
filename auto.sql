@@ -498,7 +498,7 @@ BEGIN
     DECLARE contador TINYINT;
     DECLARE aux_registrados SMALLINT;
     SET cantidad_aux = (SELECT FLOOR(RAND()*3));
-    SET aux_registrados = (SELECT count(*) auxiliar);
+    SET aux_registrados = (SELECT count(*) FROM auxiliar);
     IF (cantidad_aux > aux_registrados) THEN 
         SET cantidad_aux = aux_registrados;
     END IF;
