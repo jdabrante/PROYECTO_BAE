@@ -37,7 +37,7 @@ BEGIN
     INSERT INTO calle VALUES('C/Del Sol');
     INSERT INTO calle VALUES('C/Almirante');
     SET contador = 0;
-    WHILE (contador <= cantidad) DO
+    WHILE (contador < cantidad) DO
         SET _codigo_postal = (SELECT codigo_postal_random());
         SET _calle = (SELECT nombre FROM calle ORDER BY RAND() LIMIT 1);
         SET _numero = (SELECT RAND() * (50) + 1);
@@ -75,9 +75,10 @@ BEGIN
     INSERT INTO nombre_apellido VALUES('Nuhazet','Torres');
     SET letras = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
     SET contador = 0;
-    WHILE (contador <= cantidad) DO
+    WHILE (contador < cantidad) DO
         SET _id_direccion = (SELECT id FROM direccion ORDER BY RAND() LIMIT 1);
-        SET _dni = CONCAT((SELECT FLOOR(RAND()*(10000000))),(SELECT SUBSTR(letras,(SELECT FLOOR(RAND() * (10) + 1)),1)));
+        SET _dni = CONCAT((SELECT FLOOR(RAND()*(10000000))),(SELECT SUBSTR(letras,(SELECT FLOOR(RAND() * 27)),1)));
+        SET _dni = LPAD(_dni, 9, 0);
         SET _nombre = (SELECT nombre FROM nombre_apellido ORDER BY RAND() LIMIT 1);
         SET _apellido1 = (SELECT apellido FROM nombre_apellido ORDER BY RAND() LIMIT 1);
         SET _apellido2 = (SELECT apellido FROM nombre_apellido ORDER BY RAND() LIMIT 1);
@@ -130,7 +131,7 @@ BEGIN
         SET _dni = (SELECT dni_no_rep_cl());
         SET _categoria = (SELECT nombre FROM categoria ORDER BY RAND() LIMIT 1);
         SET _residente = (SELECT FLOOR(RAND()*10)%2);
-        INSERT INTO cliente VALUES(_dni,_categoria,_residente);
+        INSERT INTO cliente VALUES(_dni, _categoria,_residente);
         SET contador = contador + 1;
     END WHILE;
     DROP TABLE categoria;
@@ -198,12 +199,12 @@ DROP FUNCTION IF EXISTS dni_no_rep_per $$
 CREATE FUNCTION dni_no_rep_per() RETURNS VARCHAR(9)
 DETERMINISTIC
 BEGIN
-    DECLARE _dni VARCHAR(9);
+    DECLARE _dni VARCHAR(9); 
     DECLARE contador INT;
     SET contador = 0;
-    SET _dni = (SELECT dni FROM usuario LIMIT contador,1);
-    SET contador = contador + 1;
-    WHILE contador <= (SELECT count(*) FROM usuario) AND (SELECT _dni in (SELECT dni FROM personal)) DO
+    SET _dni = (SELECT dni FROM usuario LIMIT contador, 1);
+    WHILE (contador <= (SELECT COUNT(*) FROM usuario) AND (SELECT _dni in (SELECT dni FROM personal))) 
+    DO
         SET _dni = (SELECT dni FROM usuario LIMIT contador,1);
         SET contador = contador + 1;
     END WHILE;
@@ -233,7 +234,8 @@ BEGIN
     SET contador = 0;
     WHILE (contador <= cantidad) DO
         SET _dni = (SELECT dni_no_rep_per());
-        SET _nuss = CONCAT((SELECT FLOOR(RAND()*(10000000000))),(SELECT SUBSTR(letras,(SELECT FLOOR(RAND() * (10) + 1)),1)));
+        SET _nuss = CONCAT((SELECT FLOOR(RAND()*(10000000))),(SELECT SUBSTR(letras,(SELECT FLOOR(RAND() * 27)),1)));
+        SET _nuss = LPAD(_nuss, 9, 0);
         SET _tipo_contrato = (SELECT nombre FROM tipo_contrato ORDER BY RAND() LIMIT 1);
         SET _salario = (SELECT ROUND((SELECT RAND() * (1000000)),2));
         INSERT INTO personal VALUES(_dni,_nuss,_tipo_contrato,_salario);
@@ -245,36 +247,12 @@ $$
 
 -- Administrativo
 
--- # Dar DNI no repetidos
-
-DROP FUNCTION IF EXISTS dni_no_rep_advo $$
-CREATE FUNCTION dni_no_rep_advo() RETURNS VARCHAR(9)
-DETERMINISTIC
-BEGIN
-    DECLARE _dni VARCHAR(9);
-    DECLARE contador INT;
-    SET contador = 0;
-    SET _dni = (SELECT dni FROM personal LIMIT contador,1);
-    SET contador = contador + 1;
-    WHILE ((contador <= (SELECT count(*) FROM personal)) 
-    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM administrativo)) 
-    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM veterinario)) 
-    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM auxiliar)))
-    DO
-        SET _dni = (SELECT dni FROM personal LIMIT contador,1);
-        SET contador = contador + 1;
-    END WHILE;
-    RETURN _dni;
-END
-$$
-
 DROP PROCEDURE IF EXISTS insertar_administrativo $$
 CREATE PROCEDURE insertar_administrativo(IN cantidad INT)
 BEGIN
     DECLARE _dni VARCHAR(9);
     DECLARE _seccion VARCHAR(20);
     DECLARE contador INT;
-    -- # Tabla auxiliar Sección
     CREATE TABLE seccion (
         nombre VARCHAR(20)
     );
@@ -284,43 +262,20 @@ BEGIN
     INSERT INTO seccion VALUES('D');
     INSERT INTO seccion VALUES('E');
     SET contador = 0;
-    WHILE (contador <= cantidad) DO
-        SET _dni = (SELECT _dni FROM personal ORDER BY RAND() LIMIT 1);
-        IF NOT EXISTS(SELECT * FROM administrativo WHERE dni = _dni) THEN
+    WHILE (contador < cantidad) 
+    DO
+        SET _dni = (SELECT dni FROM personal ORDER BY RAND() LIMIT 1);
+        IF (NOT EXISTS(SELECT * FROM dni_usados WHERE dni = _dni)) THEN
             SET _seccion = (SELECT nombre FROM seccion ORDER BY RAND() LIMIT 1);
-            INSERT INTO administrativo VALUES(_dni,_seccion);
+            INSERT INTO administrativo VALUES(_dni, _seccion);
             SET contador = contador + 1;
+        END IF;
     END WHILE;
     DROP TABLE seccion;
 END
 $$
 
 -- Veterinario
-
--- # Dar DNI no repetidos
-
-DROP FUNCTION IF EXISTS dni_no_rep_vet $$
-CREATE FUNCTION dni_no_rep_vet() RETURNS VARCHAR(9)
-DETERMINISTIC
-BEGIN
-    DECLARE _dni VARCHAR(9);
-    DECLARE contador INT;
-    SET contador = 0;
-    SET _dni = (SELECT dni FROM personal LIMIT contador,1);
-    SET contador = contador + 1;
-    WHILE contador <= (SELECT count(*) FROM personal)
-    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM administrativo)) 
-    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM veterinario)) 
-    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM auxiliar)) 
-    DO
-        SET _dni = (SELECT dni FROM personal LIMIT contador,1);
-        SET contador = contador + 1;
-    END WHILE;
-    RETURN _dni;
-END
-$$
-
--- # Tabla auxiliar Especialidad
 
 -- Randomizador
 
@@ -341,42 +296,22 @@ BEGIN
     INSERT INTO especialidad VALUES('oftalmologia');
     SET letras = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
     SET contador = 0;
-    WHILE (contador <= cantidad) 
+    WHILE (contador < cantidad) 
     DO
-        SET _dni = (SELECT dni_no_rep_vet());
-        SET _licencia = CONCAT((SELECT FLOOR(RAND()*(10000000))),(SELECT SUBSTR(letras,(SELECT FLOOR(RAND() * (10) + 1)),1)));
-        SET _especialidad = (SELECT nombre FROM especialidad ORDER BY RAND() LIMIT 1);
-        INSERT INTO veterinario VALUES(_dni,_licencia,_especialidad);
-        SET contador = contador + 1;
-    END WHILE ;
+        SET _dni = (SELECT dni FROM personal ORDER BY RAND() LIMIT 1);
+        IF (NOT EXISTS(SELECT * FROM dni_usados WHERE dni = _dni)) THEN
+            SET _licencia = CONCAT((SELECT FLOOR(RAND()*(10000000))),(SELECT SUBSTR(letras,(SELECT FLOOR(RAND() * 27)),1)));
+            SET _licencia = LPAD(_licencia, 9, 0);
+            SET _especialidad = (SELECT nombre FROM especialidad ORDER BY RAND() LIMIT 1);
+            INSERT INTO veterinario VALUES(_dni,_licencia,_especialidad);
+            SET contador = contador + 1;
+        END IF;
+    END WHILE;
     DROP TABLE especialidad;
 END 
 $$
 
 -- Auxiliar
-
--- # Dar DNI no repetidos
-
-DROP FUNCTION IF EXISTS dni_no_rep_aux $$
-CREATE FUNCTION dni_no_rep_aux() RETURNS VARCHAR(9)
-DETERMINISTIC
-BEGIN
-    DECLARE _dni VARCHAR(9);
-    DECLARE contador INT;
-    SET contador = 0;
-    SET _dni = (SELECT dni FROM personal LIMIT contador,1);
-    SET contador = contador + 1;
-    WHILE contador <= (SELECT count(*) FROM personal)
-    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM administrativo)) 
-    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM veterinario)) 
-    AND NOT EXISTS(SELECT _dni in (SELECT dni FROM auxiliar)) 
-    DO 
-        SET _dni = (SELECT dni FROM personal LIMIT contador,1);
-        SET contador = contador + 1;
-    END WHILE;
-    RETURN _dni;
-END
-$$
 
 -- Randomizador
 
@@ -394,11 +329,14 @@ BEGIN
     INSERT INTO especialidad VALUES('dermatologia');
     INSERT INTO especialidad VALUES('oftalmologia');
     SET contador = 0;
-    WHILE (contador <= cantidad) DO
-        SET _dni = (SELECT dni_no_rep_aux());
-        SET _especialidad = (SELECT nombre FROM especialidad ORDER BY RAND() LIMIT 1);
-        INSERT INTO auxiliar VALUES(_dni,_especialidad);
-        SET contador = contador + 1;
+    WHILE (contador < cantidad) 
+    DO
+        SET _dni = (SELECT dni FROM personal ORDER BY RAND() LIMIT 1);
+        IF (NOT EXISTS(SELECT * FROM dni_usados WHERE dni = _dni)) THEN
+            SET _especialidad = (SELECT nombre FROM especialidad ORDER BY RAND() LIMIT 1);
+            INSERT INTO auxiliar VALUES(_dni,_especialidad);
+            SET contador = contador + 1;
+        END IF;
     END WHILE ;
     DROP TABLE especialidad;
 END 
@@ -418,7 +356,7 @@ BEGIN
     DECLARE _sexo ENUM('M','H');
     DECLARE contador INT;
     DECLARE letras VARCHAR(27);
--- # Tabla auxiliar especie
+-- # Tabla auxiliar especie.
     CREATE TABLE especie (
         nombre VARCHAR(20)
     );
@@ -427,11 +365,12 @@ BEGIN
     INSERT INTO especie VALUES('Conejo');
     INSERT INTO especie VALUES('Pajaro');
     INSERT INTO especie VALUES('Tortuga');
-    INSERT INTO especie VALUES('Lagartos');
+    INSERT INTO especie VALUES('Lagarto');
     SET letras = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
     SET contador = 0;
     WHILE (contador <= cantidad) DO
-        SET _id = CONCAT((SELECT FLOOR(RAND()*(10000000))),(SELECT SUBSTR(letras,(SELECT FLOOR(RAND() * (10) + 1)),1)));
+        SET _id = CONCAT((SELECT FLOOR(RAND()*(10000000))),(SELECT SUBSTR(letras,(SELECT FLOOR(RAND() * 27)),1)));
+        SET _id = LPAD(_id, 9, 0);
         SET _id_cliente = (SELECT dni FROM cliente ORDER BY RAND() LIMIT 1);
         SET _edad = (SELECT FLOOR(RAND() * (20) + 1));
         SET _especie = (SELECT nombre FROM especie ORDER BY RAND() LIMIT 1);
@@ -440,7 +379,7 @@ BEGIN
         ELSE
             SET _sexo = 'H';
         END IF;
-        INSERT INTO mascota VALUES(_id,_id_cliente,_especie,_edad,_sexo);
+        INSERT INTO mascota VALUES(_id, _id_cliente, _especie,_edad, _sexo);
         SET contador = contador + 1;
     END WHILE ;
     DROP TABLE especie;
@@ -548,11 +487,13 @@ CREATE VIEW auxiliar_info AS
 FROM usuario AS u JOIN personal AS p ON u.dni = p.dni JOIN auxiliar AS a ON u.dni = a.dni)
 $$
 
-DROP VIEW IF EXISTS used_dni
+DROP VIEW IF EXISTS dni_usados
 $$
-CREATE VIEW auxiliar_info AS
-(SELECT u.*, p.nuss, p.tipo_contrato, p.salario, a.especialidad 
-FROM usuario AS u JOIN personal AS p ON u.dni = p.dni JOIN auxiliar AS a ON u.dni = a.dni)
+CREATE VIEW dni_usados AS
+(SELECT dni
+FROM auxiliar 
+UNION SELECT dni FROM veterinario
+UNION SELECT dni FROM administrativo)
 $$
 
 DELIMITER ;
