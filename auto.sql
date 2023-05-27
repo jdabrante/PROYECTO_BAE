@@ -16,21 +16,7 @@ BEGIN
 END
 $$
 
-
-
 -- Dirección
-
--- # Tabla auxiliar de calles
-
-CREATE TABLE calle (
-    nombre VARCHAR(50)
-);
-
-INSERT INTO calle VALUES('C/Los Nidos');
-INSERT INTO calle VALUES('C/Reyes Católicos');
-INSERT INTO calle VALUES('C/Del Medio');
-INSERT INTO calle VALUES('C/Del Sol');
-INSERT INTO calle VALUES('C/Almirante');
 
 -- # Randomizador
 
@@ -42,6 +28,15 @@ BEGIN
     DECLARE _calle VARCHAR(50);
     DECLARE _numero INT;
     DECLARE contador INT;
+    -- # Tabla auxiliar de calles
+    CREATE TABLE calle (
+        nombre VARCHAR(50)
+    );
+    INSERT INTO calle VALUES('C/Los Nidos');
+    INSERT INTO calle VALUES('C/Reyes Católicos');
+    INSERT INTO calle VALUES('C/Del Medio');
+    INSERT INTO calle VALUES('C/Del Sol');
+    INSERT INTO calle VALUES('C/Almirante');
     SET contador = 0;
     WHILE (contador <= cantidad) DO
         SET _codigo_postal = (SELECT codigo_postal_random());
@@ -50,27 +45,13 @@ BEGIN
         INSERT INTO direccion(codigo_postal_municipio,calle,numero) VALUES(_codigo_postal,_calle,_numero);
         SET contador = contador + 1;
     END WHILE;
+    DROP TABLE calle;
 END
 $$
 
 
 
 -- Usuario 
-
-
-
--- Tablas axuiliares nombre y apellido
-
-CREATE TABLE nombre_apellido (
-    nombre VARCHAR(20),
-    apellido VARCHAR(20)
-);
-
-INSERT INTO nombre_apellido VALUES('Dimas','Abrante');
-INSERT INTO nombre_apellido VALUES('Juan','Gonzalez');
-INSERT INTO nombre_apellido VALUES('Javier','Hernandez');
-INSERT INTO nombre_apellido VALUES('Noelia','Carrillo');
-INSERT INTO nombre_apellido VALUES('Nuhazet','Torres');
 
 -- # Randomizador
 
@@ -86,6 +67,16 @@ BEGIN
     DECLARE contador INT;
     DECLARE letras VARCHAR(27);
     DECLARE _id_direccion INT;
+    -- Tablas axuiliares nombre y apellido
+    CREATE TABLE nombre_apellido (
+        nombre VARCHAR(20),
+        apellido VARCHAR(20)
+    );
+    INSERT INTO nombre_apellido VALUES('Dimas','Abrante');
+    INSERT INTO nombre_apellido VALUES('Juan','Gonzalez');
+    INSERT INTO nombre_apellido VALUES('Javier','Hernandez');
+    INSERT INTO nombre_apellido VALUES('Noelia','Carrillo');
+    INSERT INTO nombre_apellido VALUES('Nuhazet','Torres');
     SET letras = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
     SET contador = 0;
     WHILE (contador <= cantidad) DO
@@ -98,6 +89,7 @@ BEGIN
         INSERT INTO usuario VALUES(_dni,_nombre,_apellido1,_apellido2,_telefono,_id_direccion);
         SET contador = contador + 1;
     END WHILE ;
+    DROP TABLE nombre_apellido;
 END 
 $$
 
@@ -105,17 +97,7 @@ $$
 
 -- Cliente
 
-
-
 -- # Tabla auxiliar Categoria
-
-CREATE TABLE categoria (
-    nombre VARCHAR(20)
-);
-
-INSERT INTO categoria VALUES('Premium');
-INSERT INTO categoria VALUES('Standard');
-INSERT INTO categoria VALUES('Diamond');
 
 -- # Dar DNI no repetidos
 
@@ -148,6 +130,12 @@ BEGIN
     DECLARE _categoria VARCHAR(20);
     DECLARE _residente BOOLEAN;
     DECLARE contador INT;
+    CREATE TABLE categoria (
+        nombre VARCHAR(20)
+    );
+    INSERT INTO categoria VALUES('Premium');
+    INSERT INTO categoria VALUES('Standard');
+    INSERT INTO categoria VALUES('Diamond');
     SET contador = 0;
     WHILE (contador <= cantidad) DO
         SET _dni = (SELECT dni_no_rep_cl());
@@ -156,31 +144,11 @@ BEGIN
         INSERT INTO cliente VALUES(_dni,_categoria,_residente);
         SET contador = contador + 1;
     END WHILE;
+    DROP TABLE categoria;
 END
 $$
 
-
-
 -- Administrador 
-
-
-
--- # Tabla auxiliar permisos
-
-CREATE TABLE permiso (
-    nombre VARCHAR(20)
-);
-
-INSERT INTO permiso VALUES('CRUD');
-INSERT INTO permiso VALUES('CR');
-INSERT INTO permiso VALUES('CRU');
-INSERT INTO permiso VALUES('UD');
-INSERT INTO permiso VALUES('RUD');
-INSERT INTO permiso VALUES('C');
-INSERT INTO permiso VALUES('R');
-INSERT INTO permiso VALUES('U');
-INSERT INTO permiso VALUES('D');
-
 
 -- # Dar DNI no repetidos
 
@@ -212,6 +180,19 @@ BEGIN
     DECLARE _dni VARCHAR(9);
     DECLARE _permiso VARCHAR(20);
     DECLARE contador INT;
+    -- # Tabla auxiliar permisos
+    CREATE TABLE permiso (
+        nombre VARCHAR(20)
+    );
+    INSERT INTO permiso VALUES('CRUD');
+    INSERT INTO permiso VALUES('CR');
+    INSERT INTO permiso VALUES('CRU');
+    INSERT INTO permiso VALUES('UD');
+    INSERT INTO permiso VALUES('RUD');
+    INSERT INTO permiso VALUES('C');
+    INSERT INTO permiso VALUES('R');
+    INSERT INTO permiso VALUES('U');
+    INSERT INTO permiso VALUES('D');
     SET contador = 0;
     WHILE (contador <= cantidad) DO
         SET _dni = (SELECT dni_no_rep_ador());
@@ -219,14 +200,11 @@ BEGIN
         INSERT INTO administrador VALUES(_dni,_permiso);
         SET contador = contador + 1;
     END WHILE;
+    DROP TABLE permiso;
 END
 $$
 
-
-
-
 -- Personal
-
 
 -- # Dar DNI no repetidos
 
@@ -248,16 +226,6 @@ BEGIN
 END
 $$
 
--- # Tabla axuxiliar de contratos
-
-CREATE TABLE tipo_contrato (
-    nombre VARCHAR(20)
-);
-
-INSERT INTO tipo_contrato VALUES('indefinido');
-INSERT INTO tipo_contrato VALUES('practica');
-INSERT INTO tipo_contrato VALUES('temporal');
-
 -- # Randomizador
 
 DELIMITER $$
@@ -270,6 +238,13 @@ BEGIN
     DECLARE _salario DECIMAL(8,2);
     DECLARE letras VARCHAR(27);
     DECLARE contador INT;
+    -- # Tabla axuxiliar de contratos
+    CREATE TABLE tipo_contrato (
+        nombre VARCHAR(20)
+    );
+    INSERT INTO tipo_contrato VALUES('indefinido');
+    INSERT INTO tipo_contrato VALUES('practica');
+    INSERT INTO tipo_contrato VALUES('temporal');
     SET letras = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
     SET contador = 0;
     WHILE (contador <= cantidad) DO
@@ -280,18 +255,13 @@ BEGIN
         INSERT INTO personal VALUES(_dni,_nuss,_tipo_contrato,_salario);
         SET contador = contador + 1;
     END WHILE;
+    DROP TABLE tipo_contrato;
 END
 $$
 
-
-
-
 -- Administrativo
 
-
-
 -- # Dar DNI no repetidos
-
 
 DELIMITER $$
 DROP FUNCTION IF EXISTS dni_no_rep_advo $$
@@ -311,18 +281,6 @@ BEGIN
 END
 $$
 
--- # Tabla auxiliar Sección
-
-CREATE TABLE seccion (
-    nombre VARCHAR(20)
-);
-
-INSERT INTO seccion VALUES('A');
-INSERT INTO seccion VALUES('B');
-INSERT INTO seccion VALUES('C');
-INSERT INTO seccion VALUES('D');
-INSERT INTO seccion VALUES('E');
-
 DELIMITER $$
 DROP PROCEDURE IF EXISTS insertar_administrativo $$
 CREATE PROCEDURE insertar_administrativo(IN cantidad INT)
@@ -330,6 +288,15 @@ BEGIN
     DECLARE _dni VARCHAR(9);
     DECLARE _seccion VARCHAR(20);
     DECLARE contador INT;
+    -- # Tabla auxiliar Sección
+    CREATE TABLE seccion (
+        nombre VARCHAR(20)
+    );
+    INSERT INTO seccion VALUES('A');
+    INSERT INTO seccion VALUES('B');
+    INSERT INTO seccion VALUES('C');
+    INSERT INTO seccion VALUES('D');
+    INSERT INTO seccion VALUES('E');
     SET contador = 0;
     WHILE (contador <= cantidad) DO
         SET _dni = (SELECT dni_no_rep_advo());
@@ -337,18 +304,13 @@ BEGIN
         INSERT INTO administrativo VALUES(_dni,_seccion);
         SET contador = contador + 1;
     END WHILE;
+    DROP TABLE seccion;
 END
 $$
 
-
-
-
 -- Veterinario
 
-
-
 -- # Dar DNI no repetidos
-
 
 DELIMITER $$
 DROP FUNCTION IF EXISTS dni_no_rep_vet $$
@@ -370,15 +332,6 @@ $$
 
 -- # Tabla auxiliar Especialidad
 
-CREATE TABLE especialidad (
-    nombre VARCHAR(20)
-);
-
-INSERT INTO especialidad VALUES('cardiologia');
-INSERT INTO especialidad VALUES('oncologia');
-INSERT INTO especialidad VALUES('dermatologia');
-INSERT INTO especialidad VALUES('oftalmologia');
-
 -- Randomizador
 
 DELIMITER $$
@@ -390,6 +343,13 @@ BEGIN
     DECLARE _especialidad VARCHAR(20);
     DECLARE contador INT;
     DECLARE letras VARCHAR(27);
+    CREATE TABLE especialidad (
+        nombre VARCHAR(20)
+    );
+    INSERT INTO especialidad VALUES('cardiologia');
+    INSERT INTO especialidad VALUES('oncologia');
+    INSERT INTO especialidad VALUES('dermatologia');
+    INSERT INTO especialidad VALUES('oftalmologia');
     SET letras = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
     SET contador = 0;
     WHILE (contador <= cantidad) DO
@@ -399,17 +359,13 @@ BEGIN
         INSERT INTO veterinario VALUES(_dni,_licencia,_especialidad);
         SET contador = contador + 1;
     END WHILE ;
+    DROP TABLE especialidad;
 END 
 $$
 
-
-
 -- Auxiliar
 
-
-
 -- # Dar DNI no repetidos
-
 
 DELIMITER $$
 DROP FUNCTION IF EXISTS dni_no_rep_aux $$
@@ -438,6 +394,13 @@ BEGIN
     DECLARE _dni VARCHAR(9);
     DECLARE _especialidad VARCHAR(20);
     DECLARE contador INT;
+    CREATE TABLE especialidad (
+        nombre VARCHAR(20)
+    );
+    INSERT INTO especialidad VALUES('cardiologia');
+    INSERT INTO especialidad VALUES('oncologia');
+    INSERT INTO especialidad VALUES('dermatologia');
+    INSERT INTO especialidad VALUES('oftalmologia');
     SET contador = 0;
     WHILE (contador <= cantidad) DO
         SET _dni = (SELECT dni_no_rep_aux());
@@ -445,26 +408,11 @@ BEGIN
         INSERT INTO auxiliar VALUES(_dni,_especialidad);
         SET contador = contador + 1;
     END WHILE ;
+    DROP TABLE especialidad;
 END 
 $$
 
-
-
 -- Mascota
-
-
--- # Tabla auxiliar especie
-
-CREATE TABLE especie (
-    nombre VARCHAR(20)
-);
-
-INSERT INTO especie VALUES('Perro');
-INSERT INTO especie VALUES('Gato');
-INSERT INTO especie VALUES('Conejo');
-INSERT INTO especie VALUES('Pajaro');
-INSERT INTO especie VALUES('Tortuga');
-INSERT INTO especie VALUES('Lagartos');
 
 -- Randomizador
 
@@ -479,6 +427,16 @@ BEGIN
     DECLARE _sexo ENUM('M','H');
     DECLARE contador INT;
     DECLARE letras VARCHAR(27);
+-- # Tabla auxiliar especie
+    CREATE TABLE especie (
+        nombre VARCHAR(20)
+    );
+    INSERT INTO especie VALUES('Perro');
+    INSERT INTO especie VALUES('Gato');
+    INSERT INTO especie VALUES('Conejo');
+    INSERT INTO especie VALUES('Pajaro');
+    INSERT INTO especie VALUES('Tortuga');
+    INSERT INTO especie VALUES('Lagartos');
     SET letras = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
     SET contador = 0;
     WHILE (contador <= cantidad) DO
@@ -494,12 +452,11 @@ BEGIN
         INSERT INTO mascota VALUES(_id,_id_cliente,_especie,_edad,_sexo);
         SET contador = contador + 1;
     END WHILE ;
+    DROP TABLE especie;
 END 
 $$
 
-
 -- Cita
-
 
 DELIMITER $$
 DROP PROCEDURE IF EXISTS crear_cita $$
@@ -524,15 +481,11 @@ BEGIN
         END IF;
         INSERT INTO cita(fecha,hora,urgencia,id_mascota,id_veterinario) VALUES(_fecha,_hora,_urgencia,_id_mascota,_id_veterinario);
         SET contador = contador + 1;
-    END WHILE ;
+    END WHILE;
 END 
 $$
 
-
-
 -- Cita_Auxiliar
-
-
 
 DELIMITER $$
 DROP TRIGGER IF EXISTS generar_cita_auxiliar $$
@@ -541,9 +494,23 @@ AFTER INSERT ON cita
 FOR EACH ROW
 BEGIN
     DECLARE _id_auxiliar VARCHAR(9);
-    SET _id_auxiliar = (SELECT dni FROM auxiliar ORDER BY RAND() LIMIT 1);
-    INSERT INTO cita_auxiliar(id_cita,id_auxiliar) VALUES(NEW.id,_id_auxiliar);
-END;
+    DECLARE cantidad_aux TINYINT;
+    DECLARE contador TINYINT;
+    DECLARE aux_registrados SMALLINT;
+    SET cantidad_aux = (SELECT FLOOR(RAND()*3));
+    SET aux_registrados = (SELECT count(*) auxiliar);
+    IF (cantidad_aux > aux_registrados) THEN 
+        SET cantidad_aux = aux_registrados;
+    END IF;
+    SET contador = 0;
+    WHILE (contador < cantidad_aux) DO
+        SET _id_auxiliar = (SELECT dni FROM auxiliar ORDER BY RAND() LIMIT 1);
+        IF NOT EXISTS(SELECT * FROM cita_auxiliar WHERE id_cita = NEW.id AND id_auxiliar = _id_auxiliar) THEN
+            INSERT INTO cita_auxiliar VALUES(NEW.id, _id_auxiliar);
+            SET contador = contador + 1;
+        END IF;
+    END WHILE;
+END
 $$
 
 -- Historial
@@ -551,9 +518,15 @@ $$
 DELIMITER $$
 DROP TRIGGER IF EXISTS generar_historial $$
 CREATE TRIGGER generar_historial
-AFTER INSERT ON cita
+AFTER INSERT ON cita 
 FOR EACH ROW
 BEGIN
-    INSERT INTO historial(id) VALUES(NEW.id);
-END;
+    IF (NEW.id % 2 = 0) THEN
+        INSERT INTO historial(id, resolucion) VALUES(NEW.id, 'cancelada');
+    ELSEIF (NEW.id % 3 = 0) THEN 
+        INSERT INTO historial VALUES(NEW.id, 'atendida', 'lorem ipsum', 'lorem ipsum');
+    END IF;
+END
 $$
+
+DELIMITER ;
