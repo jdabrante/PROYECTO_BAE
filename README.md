@@ -62,5 +62,26 @@ La temática de este proyecto es médica, ya que es sobre una clinica para la at
         <img src="IMG/MR.png">
       </div>
 </details>
+ 
+<details>
+      <summary>Justificación de las formas normales</summary>
+      <div align="justify">
+       
+### Primera forma normal
+       
+Para cumplir con la primera forma normal los atributos de las tablas deben ser atómicos. En nuestro caso esto se cumple ya que no existen atributos con varios valores dentro de la misma celda
+o atirbutos suceptibles a ser separados en tablas diferentes.
 
+### Segunda forma normal
+     
+La segunda forma normal se cumplirá solo cuando se haya cumplido la primera y todos los atirbutos que no formen parte de la clave primaria tengan dependencia funcional completa con ella.
+En nuestro caso la segunda forma normal también se cumple ya que no existen atributos en las tablas que no guarden relación con la clave principal de la misma.
+       
+### Tercera forma normal
+       
+Por último la tercera forma normal solo se cumplirá se se cumplen las dos anteriores y no existe transitividad...
+
+       
+      </div>
+      </details>
 </div>
