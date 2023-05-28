@@ -42,10 +42,7 @@ BEGIN
 END
 $$
 
-<<<<<<< HEAD:auto.sql
-
 -- Usuario 
-
 
 -- Tablas axuiliares nombre y apellido
 
@@ -60,11 +57,7 @@ INSERT INTO nombre_apellido VALUES('Javier','Hernandez');
 INSERT INTO nombre_apellido VALUES('Noelia','Carrillo');
 INSERT INTO nombre_apellido VALUES('Nuhazet','Torres');
 
-=======
 -- Usuario 
-
->>>>>>> javier:sql/auto.sql
--- # Randomizador
 
 DROP PROCEDURE IF EXISTS insertar_usuario $$
 CREATE PROCEDURE insertar_usuario(IN cantidad INT)
@@ -124,8 +117,6 @@ BEGIN
 END
 $$
 
--- Randomizador 
-
 DROP PROCEDURE IF EXISTS insertar_cliente $$
 CREATE PROCEDURE insertar_cliente(IN cantidad INT)
 BEGIN
@@ -170,8 +161,6 @@ BEGIN
     RETURN _dni;
 END
 $$
-
--- Randomizador 
 
 DROP PROCEDURE IF EXISTS insertar_administrador $$
 CREATE PROCEDURE insertar_administrador(IN cantidad INT)
@@ -221,8 +210,6 @@ BEGIN
     RETURN _dni;
 END
 $$
-
--- Randomizador
 
 DROP PROCEDURE IF EXISTS insertar_personal $$
 CREATE PROCEDURE insertar_personal(IN cantidad INT)
@@ -284,8 +271,6 @@ $$
 
 -- Veterinario
 
--- Randomizador
-
 DROP PROCEDURE IF EXISTS insertar_veterinario $$
 CREATE PROCEDURE insertar_veterinario(IN cantidad INT)
 BEGIN
@@ -319,8 +304,6 @@ $$
 
 -- Auxiliar
 
--- Randomizador
-
 DROP PROCEDURE IF EXISTS insertar_auxiliar $$
 CREATE PROCEDURE insertar_auxiliar(IN cantidad INT)
 BEGIN
@@ -348,8 +331,6 @@ END
 $$
 
 -- Mascota
-
--- Randomizador
 
 DROP PROCEDURE IF EXISTS insertar_mascota $$
 CREATE PROCEDURE insertar_mascota(IN cantidad INT)
@@ -418,16 +399,8 @@ BEGIN
 END 
 $$
 
-<<<<<<< HEAD:auto.sql
-
 -- Cita_Auxiliar
 
-
-DELIMITER $$
-=======
--- Cita_Auxiliar
-
->>>>>>> javier:sql/auto.sql
 DROP TRIGGER IF EXISTS generar_cita_auxiliar $$
 CREATE TRIGGER generar_cita_auxiliar
 AFTER INSERT ON cita
