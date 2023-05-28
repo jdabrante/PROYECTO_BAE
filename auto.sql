@@ -1,5 +1,3 @@
--- Randomizar todo con un trigger según se insertan usuarios
-
 -- Municipio
 
 INSERT INTO municipio VALUES('38400','Puerto de la Cruz');
@@ -17,8 +15,6 @@ END
 $$
 
 -- Dirección
-
--- # Randomizador
 
 DROP PROCEDURE IF EXISTS insertar_direccion $$
 CREATE PROCEDURE insertar_direccion(IN cantidad INT)
@@ -89,7 +85,7 @@ $$
 
 -- Cliente
 
--- # Dar DNI no repetidos
+-- Dar DNI no repetidos
 
 DROP FUNCTION IF EXISTS dni_no_rep_cl $$
 CREATE FUNCTION dni_no_rep_cl() RETURNS VARCHAR(9)
@@ -108,7 +104,7 @@ BEGIN
 END
 $$
 
--- # Randomizador 
+-- Randomizador 
 
 DROP PROCEDURE IF EXISTS insertar_cliente $$
 CREATE PROCEDURE insertar_cliente(IN cantidad INT)
@@ -136,7 +132,7 @@ $$
 
 -- Administrador 
 
--- # Dar DNI no repetidos
+-- Dar DNI no repetidos
 
 DROP FUNCTION IF EXISTS dni_no_rep_ador $$
 CREATE FUNCTION dni_no_rep_ador() RETURNS VARCHAR(9)
@@ -155,7 +151,7 @@ BEGIN
 END
 $$
 
--- # Randomizador 
+-- Randomizador 
 
 DROP PROCEDURE IF EXISTS insertar_administrador $$
 CREATE PROCEDURE insertar_administrador(IN cantidad INT)
@@ -187,7 +183,7 @@ $$
 
 -- Personal
 
--- # Dar DNI no repetidos
+-- Dar DNI no repetidos
 
 DROP FUNCTION IF EXISTS dni_no_rep_per $$
 CREATE FUNCTION dni_no_rep_per() RETURNS VARCHAR(9)
@@ -206,7 +202,7 @@ BEGIN
 END
 $$
 
--- # Randomizador
+-- Randomizador
 
 DROP PROCEDURE IF EXISTS insertar_personal $$
 CREATE PROCEDURE insertar_personal(IN cantidad INT)
