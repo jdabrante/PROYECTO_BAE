@@ -44,21 +44,6 @@ $$
 
 -- Usuario 
 
--- Tablas axuiliares nombre y apellido
-
-CREATE TABLE nombre_apellido (
-    nombre VARCHAR(20),
-    apellido VARCHAR(20)
-);
-
-INSERT INTO nombre_apellido VALUES('Dimas','Abrante');
-INSERT INTO nombre_apellido VALUES('Juan','Gonzalez');
-INSERT INTO nombre_apellido VALUES('Javier','Hernandez');
-INSERT INTO nombre_apellido VALUES('Noelia','Carrillo');
-INSERT INTO nombre_apellido VALUES('Nuhazet','Torres');
-
--- Usuario 
-
 DROP PROCEDURE IF EXISTS insertar_usuario $$
 CREATE PROCEDURE insertar_usuario(IN cantidad INT)
 BEGIN
