@@ -1,10 +1,7 @@
--- Creación de la BD
 DROP DATABASE clinica_veterinaria;
 
 CREATE DATABASE clinica_veterinaria;
 USE clinica_veterinaria;
-
--- Creación de tablas
 
 CREATE TABLE municipio (
     codigo_postal VARCHAR(5) PRIMARY KEY,
@@ -19,8 +16,6 @@ CREATE TABLE direccion (
     codigo_postal_municipio VARCHAR(5),
     FOREIGN KEY (codigo_postal_municipio) REFERENCES municipio(codigo_postal)
 );
-
- -- Hacer trigger para calcular letra del DNI
 
 CREATE TABLE usuario (
     dni VARCHAR(9) PRIMARY KEY,
@@ -53,7 +48,6 @@ CREATE TABLE personal (
     FOREIGN KEY (dni) REFERENCES usuario(dni)
 );
 
--- Cambiar en el ER para poner las ID como DNI de las tablas que heredan de usuario
 CREATE TABLE administrativo (
     dni VARCHAR(9) PRIMARY KEY,
     seccion VARCHAR(20),
@@ -93,9 +87,6 @@ CREATE TABLE cita (
     FOREIGN KEY (id_mascota) REFERENCES mascota(id),
     FOREIGN KEY (id_veterinario) REFERENCES veterinario(dni)
 );
-
--- Cambiar ER  1:N a 1:1-1:0. Aprovechar para hacer vistar con JOIN
--- Mirar tipo de dato de "resolución"
 
 CREATE TABLE historial (
     id INT PRIMARY KEY,

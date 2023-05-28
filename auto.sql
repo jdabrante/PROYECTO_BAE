@@ -27,24 +27,22 @@ BEGIN
     DECLARE _calle VARCHAR(50);
     DECLARE _numero INT;
     DECLARE contador INT;
-    -- # Tabla auxiliar de calles
-    CREATE TABLE calle (
-        nombre VARCHAR(50)
-    );
-    INSERT INTO calle VALUES('C/Los Nidos');
-    INSERT INTO calle VALUES('C/Reyes Católicos');
-    INSERT INTO calle VALUES('C/Del Medio');
-    INSERT INTO calle VALUES('C/Del Sol');
-    INSERT INTO calle VALUES('C/Almirante');
+    DECLARE i TINYINT;
     SET contador = 0;
     WHILE (contador < cantidad) DO
         SET _codigo_postal = (SELECT codigo_postal_random());
-        SET _calle = (SELECT nombre FROM calle ORDER BY RAND() LIMIT 1);
+        SET i = FLOOR(RAND()*5);
+        CASE i
+            WHEN 0 THEN SET _calle = 'C/Los Nidos';
+            WHEN 1 THEN SET _calle = 'C/Reyes Católicos';
+            WHEN 2 THEN SET _calle = 'C/Del Medio';
+            WHEN 3 THEN SET _calle = 'C/Del Sol';
+            WHEN 4 THEN SET _calle = 'C/Almirante';
+        END CASE;
         SET _numero = (SELECT RAND() * (50) + 1);
         INSERT INTO direccion(codigo_postal_municipio,calle,numero) VALUES(_codigo_postal,_calle,_numero);
         SET contador = contador + 1;
     END WHILE;
-    DROP TABLE calle;
 END
 $$
 
@@ -63,7 +61,6 @@ BEGIN
     DECLARE contador INT;
     DECLARE letras VARCHAR(27);
     DECLARE _id_direccion INT;
-    -- Tablas axuiliares nombre y apellido
     CREATE TABLE nombre_apellido (
         nombre VARCHAR(20),
         apellido VARCHAR(20)
@@ -120,21 +117,20 @@ BEGIN
     DECLARE _categoria VARCHAR(20);
     DECLARE _residente BOOLEAN;
     DECLARE contador INT;
-    CREATE TABLE categoria (
-        nombre VARCHAR(20)
-    );
-    INSERT INTO categoria VALUES('Premium');
-    INSERT INTO categoria VALUES('Standard');
-    INSERT INTO categoria VALUES('Diamond');
+    DECLARE i TINYINT;
     SET contador = 0;
     WHILE (contador <= cantidad) DO
         SET _dni = (SELECT dni_no_rep_cl());
-        SET _categoria = (SELECT nombre FROM categoria ORDER BY RAND() LIMIT 1);
+        SET i = FLOOR(RAND()*3);
+        CASE i
+            WHEN 0 THEN  SET _categoria = 'Premium';
+            WHEN 1 THEN  SET _categoria = 'Standard';
+            WHEN 2 THEN  SET _categoria = 'Diamond';
+        END CASE;
         SET _residente = (SELECT FLOOR(RAND()*10)%2);
         INSERT INTO cliente VALUES(_dni, _categoria,_residente);
         SET contador = contador + 1;
     END WHILE;
-    DROP TABLE categoria;
 END
 $$
 
@@ -167,27 +163,25 @@ BEGIN
     DECLARE _dni VARCHAR(9);
     DECLARE _permiso VARCHAR(20);
     DECLARE contador INT;
-    -- # Tabla auxiliar permisos
-    CREATE TABLE permiso (
-        nombre VARCHAR(20)
-    );
-    INSERT INTO permiso VALUES('CRUD');
-    INSERT INTO permiso VALUES('CR');
-    INSERT INTO permiso VALUES('CRU');
-    INSERT INTO permiso VALUES('UD');
-    INSERT INTO permiso VALUES('RUD');
-    INSERT INTO permiso VALUES('C');
-    INSERT INTO permiso VALUES('R');
-    INSERT INTO permiso VALUES('U');
-    INSERT INTO permiso VALUES('D');
+    DECLARE i TINYINT;
     SET contador = 0;
     WHILE (contador <= cantidad) DO
         SET _dni = (SELECT dni_no_rep_ador());
-        SET _permiso = (SELECT nombre FROM permiso ORDER BY RAND() LIMIT 1);
+        SET i = FLOOR(RAND()*9);
+        CASE i
+            WHEN 0 THEN SET _permiso = 'CRUD';
+            WHEN 1 THEN SET _permiso = 'CR';
+            WHEN 2 THEN SET _permiso = 'CRU';
+            WHEN 3 THEN SET _permiso = 'UD';
+            WHEN 4 THEN SET _permiso = 'RUD';
+            WHEN 5 THEN SET _permiso = 'C';
+            WHEN 6 THEN SET _permiso = 'R';
+            WHEN 7 THEN SET _permiso = 'U';
+            WHEN 8 THEN SET _permiso = 'D';
+        END CASE;
         INSERT INTO administrador VALUES(_dni,_permiso);
         SET contador = contador + 1;
     END WHILE;
-    DROP TABLE permiso;
 END
 $$
 
@@ -223,25 +217,23 @@ BEGIN
     DECLARE _salario DECIMAL(8,2);
     DECLARE letras VARCHAR(27);
     DECLARE contador INT;
-    -- # Tabla axuxiliar de contratos
-    CREATE TABLE tipo_contrato (
-        nombre VARCHAR(20)
-    );
-    INSERT INTO tipo_contrato VALUES('indefinido');
-    INSERT INTO tipo_contrato VALUES('practica');
-    INSERT INTO tipo_contrato VALUES('temporal');
+    DECLARE i TINYINT;
     SET letras = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
     SET contador = 0;
     WHILE (contador <= cantidad) DO
         SET _dni = (SELECT dni_no_rep_per());
         SET _nuss = CONCAT((SELECT FLOOR(RAND()*(10000000))),(SELECT SUBSTR(letras,(SELECT FLOOR(RAND() * 27)),1)));
         SET _nuss = LPAD(_nuss, 9, 0);
-        SET _tipo_contrato = (SELECT nombre FROM tipo_contrato ORDER BY RAND() LIMIT 1);
+        SET i = FLOOR(RAND()*3);
+        CASE i
+            WHEN 0 THEN SET _tipo_contrato = 'indefinido';
+            WHEN 1 THEN SET _tipo_contrato = 'practica';
+            WHEN 2 THEN SET _tipo_contrato = 'temporal';
+        END CASE;
         SET _salario = (SELECT ROUND((SELECT RAND() * (1000000)),2));
         INSERT INTO personal VALUES(_dni,_nuss,_tipo_contrato,_salario);
         SET contador = contador + 1;
     END WHILE;
-    DROP TABLE tipo_contrato;
 END
 $$
 
@@ -253,25 +245,24 @@ BEGIN
     DECLARE _dni VARCHAR(9);
     DECLARE _seccion VARCHAR(20);
     DECLARE contador INT;
-    CREATE TABLE seccion (
-        nombre VARCHAR(20)
-    );
-    INSERT INTO seccion VALUES('A');
-    INSERT INTO seccion VALUES('B');
-    INSERT INTO seccion VALUES('C');
-    INSERT INTO seccion VALUES('D');
-    INSERT INTO seccion VALUES('E');
+    DECLARE i TINYINT;
     SET contador = 0;
     WHILE (contador < cantidad) 
     DO
         SET _dni = (SELECT dni FROM personal ORDER BY RAND() LIMIT 1);
         IF (NOT EXISTS(SELECT * FROM dni_usados WHERE dni = _dni)) THEN
-            SET _seccion = (SELECT nombre FROM seccion ORDER BY RAND() LIMIT 1);
+            SET i = FLOOR(RAND()*5);
+            CASE i
+                WHEN 0 THEN SET _seccion = 'A';
+                WHEN 1 THEN SET _seccion = 'B';
+                WHEN 2 THEN SET _seccion = 'C';
+                WHEN 3 THEN SET _seccion = 'D';
+                WHEN 4 THEN SET _seccion = 'E';
+            END CASE;
             INSERT INTO administrativo VALUES(_dni, _seccion);
             SET contador = contador + 1;
         END IF;
     END WHILE;
-    DROP TABLE seccion;
 END
 $$
 
@@ -287,13 +278,7 @@ BEGIN
     DECLARE _especialidad VARCHAR(20);
     DECLARE contador INT;
     DECLARE letras VARCHAR(27);
-    CREATE TABLE especialidad (
-        nombre VARCHAR(20)
-    );
-    INSERT INTO especialidad VALUES('cardiologia');
-    INSERT INTO especialidad VALUES('oncologia');
-    INSERT INTO especialidad VALUES('dermatologia');
-    INSERT INTO especialidad VALUES('oftalmologia');
+    DECLARE i TINYINT;
     SET letras = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
     SET contador = 0;
     WHILE (contador < cantidad) 
@@ -302,12 +287,17 @@ BEGIN
         IF (NOT EXISTS(SELECT * FROM dni_usados WHERE dni = _dni)) THEN
             SET _licencia = CONCAT((SELECT FLOOR(RAND()*(10000000))),(SELECT SUBSTR(letras,(SELECT FLOOR(RAND() * 27)),1)));
             SET _licencia = LPAD(_licencia, 9, 0);
-            SET _especialidad = (SELECT nombre FROM especialidad ORDER BY RAND() LIMIT 1);
+            SET i = FLOOR(RAND()*4);
+            CASE i
+                WHEN 0 THEN SET _especialidad = 'cardiologia';
+                WHEN 1 THEN SET _especialidad = 'oncologia';
+                WHEN 2 THEN SET _especialidad = 'dermatologia';
+                WHEN 3 THEN SET _especialidad = 'oftalmologia';
+            END CASE;
             INSERT INTO veterinario VALUES(_dni,_licencia,_especialidad);
             SET contador = contador + 1;
         END IF;
     END WHILE;
-    DROP TABLE especialidad;
 END 
 $$
 
@@ -321,24 +311,23 @@ BEGIN
     DECLARE _dni VARCHAR(9);
     DECLARE _especialidad VARCHAR(20);
     DECLARE contador INT;
-    CREATE TABLE especialidad (
-        nombre VARCHAR(20)
-    );
-    INSERT INTO especialidad VALUES('cardiologia');
-    INSERT INTO especialidad VALUES('oncologia');
-    INSERT INTO especialidad VALUES('dermatologia');
-    INSERT INTO especialidad VALUES('oftalmologia');
+    DECLARE i TINYINT;
     SET contador = 0;
     WHILE (contador < cantidad) 
     DO
         SET _dni = (SELECT dni FROM personal ORDER BY RAND() LIMIT 1);
         IF (NOT EXISTS(SELECT * FROM dni_usados WHERE dni = _dni)) THEN
-            SET _especialidad = (SELECT nombre FROM especialidad ORDER BY RAND() LIMIT 1);
+            SET i = FLOOR(RAND()*4);
+            CASE i
+                WHEN 0 THEN SET _especialidad = 'cardiologia';
+                WHEN 1 THEN SET _especialidad = 'oncologia';
+                WHEN 2 THEN SET _especialidad = 'dermatologia';
+                WHEN 3 THEN SET _especialidad = 'oftalmologia';
+            END CASE;
             INSERT INTO auxiliar VALUES(_dni,_especialidad);
             SET contador = contador + 1;
         END IF;
     END WHILE ;
-    DROP TABLE especialidad;
 END 
 $$
 
@@ -356,16 +345,7 @@ BEGIN
     DECLARE _sexo ENUM('M','H');
     DECLARE contador INT;
     DECLARE letras VARCHAR(27);
--- # Tabla auxiliar especie.
-    CREATE TABLE especie (
-        nombre VARCHAR(20)
-    );
-    INSERT INTO especie VALUES('Perro');
-    INSERT INTO especie VALUES('Gato');
-    INSERT INTO especie VALUES('Conejo');
-    INSERT INTO especie VALUES('Pajaro');
-    INSERT INTO especie VALUES('Tortuga');
-    INSERT INTO especie VALUES('Lagarto');
+    DECLARE i TINYINT;
     SET letras = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
     SET contador = 0;
     WHILE (contador <= cantidad) DO
@@ -373,7 +353,15 @@ BEGIN
         SET _id = LPAD(_id, 9, 0);
         SET _id_cliente = (SELECT dni FROM cliente ORDER BY RAND() LIMIT 1);
         SET _edad = (SELECT FLOOR(RAND() * (20) + 1));
-        SET _especie = (SELECT nombre FROM especie ORDER BY RAND() LIMIT 1);
+        SET i = FLOOR(RAND()*6);
+        CASE i
+            WHEN 0 THEN SET _especie = 'Perro';
+            WHEN 1 THEN SET _especie = 'Gato';
+            WHEN 2 THEN SET _especie = 'Conejo';
+            WHEN 3 THEN SET _especie = 'Pajaro';
+            WHEN 4 THEN SET _especie = 'Tortuga';
+            WHEN 5 THEN SET _especie = 'Lagarto';
+        END CASE;
         IF (SELECT FLOOR(RAND() * 10)) > 5 THEN
             SET _sexo = 'M';
         ELSE
@@ -382,7 +370,7 @@ BEGIN
         INSERT INTO mascota VALUES(_id, _id_cliente, _especie,_edad, _sexo);
         SET contador = contador + 1;
     END WHILE ;
-    DROP TABLE especie;
+
 END 
 $$
 
@@ -463,6 +451,9 @@ $$
 -- ALTER TABLE cita DROP INDEX idx_urgencia
 -- $$
 CREATE INDEX idx_urgencia ON cita(urgencia)
+$$
+
+CREATE FULLTEXT INDEX idx_descripcion ON historial(descripcion)
 $$
 
 DROP VIEW IF EXISTS historial_mascota
