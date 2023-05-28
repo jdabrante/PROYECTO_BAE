@@ -70,16 +70,16 @@ La temática de este proyecto es médica, ya que es sobre una clinica para la at
 ### Primera forma normal
        
 Para cumplir con la primera forma normal los atributos de las tablas deben ser atómicos. En nuestro caso esto se cumple ya que no existen atributos con varios valores dentro de la misma celda
-o atirbutos suceptibles a ser separados en tablas diferentes.
+o atributos suceptibles a ser separados en tablas diferentes.
 
 ### Segunda forma normal
      
-La segunda forma normal se cumplirá solo cuando se haya cumplido la primera y todos los atirbutos que no formen parte de la clave primaria tengan dependencia funcional completa con ella.
+La segunda forma normal se cumplirá solo cuando se haya cumplido la primera y todos los atributos que no formen parte de la clave primaria tengan dependencia funcional completa con ella.
 En nuestro caso la segunda forma normal también se cumple ya que no existen atributos en las tablas que no guarden relación con la clave principal de la misma.
        
 ### Tercera forma normal
        
-Por último la tercera forma normal solo se cumplirá se se cumplen las dos anteriores y no exista transitivida. En las tablas de este proyecto no existe tal transtividad, un ejemplo donde esto podría ocurrir y que está controlado
+Por último la tercera forma normal solo se cumplirá se se cumplen las dos anteriores y no exista transitividad. En las tablas de este proyecto no existe tal transtividad, un ejemplo donde esto podría ocurrir y que está controlado
 es el caso de la dirección ya que si esta se encontrara dentro del usuario no se cumpliria esta forma normal.
 
 </div>
