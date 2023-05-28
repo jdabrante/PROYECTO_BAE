@@ -81,7 +81,6 @@ En nuestro caso la segunda forma normal también se cumple ya que no existen atr
        
 Por último la tercera forma normal solo se cumplirá se se cumplen las dos anteriores y no existe transitividad...
 
-       
-      </div>
-      </details>
+</div>
+</details>
 </div>
