@@ -79,7 +79,8 @@ En nuestro caso la segunda forma normal también se cumple ya que no existen atr
        
 ### Tercera forma normal
        
-Por último la tercera forma normal solo se cumplirá se se cumplen las dos anteriores y no existe transitividad...
+Por último la tercera forma normal solo se cumplirá se se cumplen las dos anteriores y no exista transitivida. En las tablas de este proyecto no existe tal transtividad, un ejemplo donde esto podría ocurrir y que está controlado
+es el caso de la dirección ya que si esta se encontrara dentro del usuario no se cumpliria esta forma normal.
 
 </div>
 </details>
