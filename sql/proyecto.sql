@@ -104,6 +104,6 @@ CREATE TABLE cita_auxiliar (
     FOREIGN KEY (id_auxiliar) REFERENCES auxiliar(dni)
 );
 
-SOURCE auto.sql
+SOURCE random.sql
 
-SOURCE call.sql
+SOURCE calls.sql
